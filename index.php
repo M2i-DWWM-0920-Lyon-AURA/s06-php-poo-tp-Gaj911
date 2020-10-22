@@ -44,9 +44,9 @@ if (
         :developer_id,
         :platform_id
     )
-');
+    ');
 
-$statement->execute([
+    $statement->execute([
     ':title' => $_GET['title'],
     ':release_date' => $_GET['release_date'],
     ':link' => $_GET['link'],
@@ -57,13 +57,47 @@ $statement->execute([
     
 }
 
-if (isset($_GET['id'])) {
+// var_dump($_POST); die;
 
+if(
+    isset($_POST['id'])
+    && isset($_POST['title'])
+    && isset($_POST['link']) && filter_var($_GET['link'], FILTER_VALIDATE_URL, )
+    && isset($_POST['release_date'])
+    && isset($_POST['developer'])
+    && isset($_POST['platform'])
+
+) 
+  {
+
+            $statement = $databaseHandler->prepare('
+                UPDATE `game`
+                SET
+                `title` = :title,
+                `release_date` = :release_date,
+                `link` = :link,
+                `developer_id` = :developer_id,
+                `platform_id` = :platform_id
+                WHERE `id` = :id;
+            ');
+        $statement->execute([
+            ':id' => $_POST['id'],
+            ':title' => $_POST['title'],
+            ':release_date' => $_POST['release_date'],
+            ':link' => $_POST['link'],
+            ':developer_id' => $_POST['developer'],
+            ':platform_id' => $_POST['platform'],
+        ]);
+    }
+
+
+if (isset($_POST['delete'])) {
+ $databaseHandler->exec('DELETE FROM `game` WHERE `id` = ' . $_POST['delete']);
 }
 
-// var_dump($test); die;
 
-// var_dump($games); die;
+
+// var_dump($game[$_GET['id']]['title'] ); die;
 // var_dump($devs); die;
 // var_dump($games); die;
 // var_dump($platForm); die;
@@ -121,7 +155,7 @@ if (isset($_GET['id'])) {
                             </td>
                             <td>
 
-                            <form action="/">
+                            <form action="">
                                 <input type="hidden" name="id" value="<?= $game->getId() ?>" />
                                 <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i>
@@ -131,7 +165,7 @@ if (isset($_GET['id'])) {
                         </td>
                         <td>
 
-                        <form method="post">
+                        <form method="post" action="/">
                             <input type="hidden" name="delete" value="<?= $game->getId() ?>" />
                             <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="fas fa-trash-alt"></i>
@@ -149,6 +183,7 @@ if (isset($_GET['id'])) {
                             <th scope="row"></th>
                             <td>
                                 <input type="text" name="title" placeholder="Title" />
+    
                                 <br />
                                 <input type="text" name="link" placeholder="External link" />
                             </td>
@@ -183,6 +218,50 @@ if (isset($_GET['id'])) {
                             <td></td>
                         </tr>
                     </form>
+
+
+                    <?php if(isset($_GET['id'])): ?>
+                        <form method="post" action="/">
+                            <input type="hidden" name="id" value="<?= $_GET['id'] ?>" />
+
+                            <tr>
+                            <th scope="row"><?= $_GET['id'] ?></th>
+                                <td>
+                                
+                                <input value="" type="text" name="title" />
+                                <br />
+                                <input value="" type="text" name="link"/>
+                                </td>
+                                <td>
+                                    <input type="date" name="release_date" />
+                                </td>
+                                                            
+                                <td>  
+                                    <select name="developer">           
+                                        <?php foreach ($devs as $dev): ?>
+                                            <option value="<?= $dev->getId() ?>"><?= $dev->getName() ?></option>
+                                        <?php endforeach; ?>
+                                    </select>    
+                                    
+                                </td>
+                                <td>
+                                    <select name="platform">
+                                    <?php foreach ($platForms as $platForm): ?>
+                                        <option value="<?= $platForm->getId() ?>"><?= $platForm->getName() ?></option>
+                                    <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td>
+                            
+
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </form>
+                    <?php endif;?>
 
 
 

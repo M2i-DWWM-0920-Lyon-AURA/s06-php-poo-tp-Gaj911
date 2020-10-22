@@ -16,7 +16,7 @@ Dynamiser le modèle de page fourni dans **index.php** afin d'afficher la liste 
 
 ### Bonus
 
-Lorsque l'on clique sur l'icône de flèche à côté du nom d'une colonne, la liste des jeux vidéos doit apparaître triée en fonction de ce critère.
+Lorsque l'on clique sur l'icône de flèche à côté du nom d'une colonne, la liste des jeux vidéos doit apparaître triée en fonction de ce critère. 
 
 ## 4. Créer un nouveau jeu vidéo
 

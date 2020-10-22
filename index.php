@@ -1,14 +1,31 @@
 <?php
 
+require_once './Models/developer.class.php';
+require_once './Models/game.class.php';
+require_once './Models/platform.class.php';
+
+
+
 
 $databaseHandler = new PDO('mysql:host=localhost;dbname=videogames', 'root', 'root');
+$databaseHandler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$databaseHandler->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
 
 $statement = $databaseHandler->query('SELECT * FROM `game` LIMIT 50');
 
-$games = $statement->fetchAll();
+// $games = $statement->fetchAll();
 
+$dev = fetchAllDeveloper();
+$game = fetchAllGame();
+$platForm = fetchAllPlatform();
 
 // var_dump($games); die;
+// var_dump($dev); die;
+// var_dump($game); die;
+var_dump($platForm); die;
+
+
 
 
 ?>

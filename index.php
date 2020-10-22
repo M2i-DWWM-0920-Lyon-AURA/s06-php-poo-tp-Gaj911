@@ -16,14 +16,22 @@ $statement = $databaseHandler->query('SELECT * FROM `game` LIMIT 50');
 
 // $games = $statement->fetchAll();
 
-$dev = fetchAllDeveloper();
-$game = fetchAllGame();
+$devs = fetchAllDeveloper();
+$games = fetchAllGames();
 $platForm = fetchAllPlatform();
 
+$test = $databaseHandler->query('SELECT * FROM `developer` 
+JOIN `game`
+ON `game`.`developer_id` = `developer`.`id`
+WHERE `developer`.`id` = 1;
+')
+
+// var_dump($test); die;
+
 // var_dump($games); die;
-// var_dump($dev); die;
-// var_dump($game); die;
-var_dump($platForm); die;
+// var_dump($devs); die;
+// var_dump($games); die;
+// var_dump($platForm); die;
 
 
 
@@ -59,52 +67,38 @@ var_dump($platForm); die;
                     </tr>
                 </thead>
                 <tbody>
+
+                <?php foreach ($games as $game): ?>
+
                     <tr>
-                        <th scope="row">1</th>
+                        <th scope="row"><?= $game->getId() ?></th>
                         <td>
-                            <a href="https://en.wikipedia.org/wiki/Populous_(video_game)">Populous</a>
+                            <a href="<?= $game->getLink() ?>"><?= $game->getTitle() ?></a>
                         </td>
-                        <td>5 june 1989</td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Bullfrog_Productions">Bullfrog Productions</a>
-                        </td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Amiga">Amiga</a>
-                        </td>
-                        <td>
+                        <td><?= $game->getRelease_date() ?></td>
+                        
+                            <td>
+                                <a href="<?= $game->getDeveloper()->getLink() ?>"><?= $game->getDeveloper()->getName() ?></a>
+                            </td>
+                            <td>
+                                <a href="<?= $game->getPlatform()->getLink() ?>"><?= $game->getPlatform()->getName() ?></a>
+                            </td>
+                            <td>
+
                             <button class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </td>
                         <td>
+
                             <button class="btn btn-danger btn-sm">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Populous_(video_game)">Doom</a>
-                        </td>
-                        <td>10 December 1993</td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Bullfrog_Productions">id Software</a>
-                        </td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/MS-DOS">MS-DOS</a>
-                        </td>
-                        <td>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
+
+                <?php endforeach; ?>
+
                     <form>
                         <tr>
                             <th scope="row"></th>
@@ -136,6 +130,9 @@ var_dump($platForm); die;
                             <td></td>
                         </tr>
                     </form>
+
+
+
                 </tbody>
             </table>
             <div class="card-body">

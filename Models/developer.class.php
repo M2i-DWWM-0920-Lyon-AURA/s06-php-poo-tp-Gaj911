@@ -1,6 +1,11 @@
 <?php 
 
-final class developer 
+require_once './Models/developer.class.php';
+require_once './Models/game.class.php';
+require_once './Models/platform.class.php';
+
+
+final class Developer 
 {
     protected $id;
     protected $name;
@@ -81,4 +86,18 @@ function fetchAllDeveloper() {
     $statement = $databaseHandler->query('SELECT * FROM `developer`');
     return $statement->fetchAll(PDO::FETCH_FUNC, 'createDeveloper');
 
+}
+
+function fetchDeveloperById(int $id): ?Developer {
+    global $databaseHandler;
+
+    $statement = $databaseHandler->prepare('SELECT * FROM `developer` WHERE `id` = :id');
+    $statement->execute([ ':id' => $id ]);
+    $result = $statement->fetchAll(PDO::FETCH_FUNC, 'createDeveloper');
+    
+    if (empty($result)) {
+        return null;
+    }
+
+    return $result[0];
 }

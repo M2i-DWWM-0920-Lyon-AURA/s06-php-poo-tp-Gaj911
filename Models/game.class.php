@@ -1,6 +1,11 @@
 <?php 
 
-final class game 
+require_once './Models/developer.class.php';
+require_once './Models/game.class.php';
+require_once './Models/platform.class.php';
+
+
+final class Games 
 {
     protected $id;
     protected $title;
@@ -84,7 +89,7 @@ final class game
     /**
      * Get the value of link
      */ 
-    public function getLink()
+    public function getLink() 
     {
         return $this->link;
     }
@@ -104,9 +109,9 @@ final class game
     /**
      * Get the value of developer_id
      */ 
-    public function getDeveloper_id()
+    public function getDeveloper() : ?Developer
     {
-        return $this->developer_id;
+        return fetchDeveloperById($this->developer_id);
     }
 
     /**
@@ -114,9 +119,9 @@ final class game
      *
      * @return  self
      */ 
-    public function setDeveloper_id($developer_id)
+    public function setDeveloper(Developer $developer)
     {
-        $this->developer_id = $developer_id;
+        $this->developer_id = $developer->getId();
 
         return $this;
     }
@@ -124,9 +129,9 @@ final class game
     /**
      * Get the value of platform_id
      */ 
-    public function getPlatform_id()
+    public function getPlatform() : ?Platform
     {
-        return $this->platform_id;
+        return  fetchPlatformById($this->platform_id);
     }
 
     /**
@@ -134,23 +139,37 @@ final class game
      *
      * @return  self
      */ 
-    public function setPlatform_id($platform_id)
+    public function setPlatform(Platform $platform)
     {
-        $this->platform_id = $platform_id;
+        $this->platform_id = $platform->getId();
 
         return $this;
     }
 }   
 
-function createGame($id, $title, $release_date, $link, $developer_id, $platform_id) {
-    return new game($id, $title, $release_date, $link, $developer_id, $platform_id);
+function createGames($id, $title, $release_date, $link, $developer_id, $platform_id) {
+    return new games($id, $title, $release_date, $link, $developer_id, $platform_id);
 }
 
 
-function fetchAllGame() {
+function fetchAllGames() {
     global $databaseHandler; 
 
     $statement = $databaseHandler->query('SELECT * FROM `game`');
-    return $statement->fetchAll(PDO::FETCH_FUNC, 'createGame');
+    return $statement->fetchAll(PDO::FETCH_FUNC, 'createGames');
 
+}
+
+function fetchGameById(int $id): ?Games {
+    global $databaseHandler;
+
+    $statement = $databaseHandler->prepare('SELECT * FROM `game` WHERE `id` = :id');
+    $statement->execute([ ':id' => $id ]);
+    $result = $statement->fetchAll(PDO::FETCH_FUNC, 'createGames');
+    
+    if (empty($result)) {
+        return null;
+    }
+
+    return $result[0];
 }

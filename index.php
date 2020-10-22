@@ -23,7 +23,7 @@ $platForms = fetchAllPlatform();
 
 if (
     isset($_GET['title'])
-    && isset($_GET['link'])
+    && isset($_GET['link']) && filter_var($_GET['link'], FILTER_VALIDATE_URL, )
     && isset($_GET['release_date'])
     && isset($_GET['developer'])
     && isset($_GET['platform'])
@@ -57,6 +57,9 @@ $statement->execute([
     
 }
 
+if (isset($_GET['id'])) {
+
+}
 
 // var_dump($test); die;
 

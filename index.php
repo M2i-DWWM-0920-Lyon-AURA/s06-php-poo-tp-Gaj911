@@ -18,13 +18,45 @@ $statement = $databaseHandler->query('SELECT * FROM `game` LIMIT 50');
 
 $devs = fetchAllDeveloper();
 $games = fetchAllGames();
-$platForm = fetchAllPlatform();
+$platForms = fetchAllPlatform();
 
-$test = $databaseHandler->query('SELECT * FROM `developer` 
-JOIN `game`
-ON `game`.`developer_id` = `developer`.`id`
-WHERE `developer`.`id` = 1;
-')
+
+if (
+    isset($_GET['title'])
+    && isset($_GET['link'])
+    && isset($_GET['release_date'])
+    && isset($_GET['developer'])
+    && isset($_GET['platform'])
+) {
+   
+    $statement = $databaseHandler->prepare('
+    INSERT INTO `game` (
+        `title`,
+        `release_date`,
+        `link`,
+        `developer_id`,
+        `platform_id`
+    )
+    VALUES (
+        :title,
+        :release_date,
+        :link,
+        :developer_id,
+        :platform_id
+    )
+');
+
+$statement->execute([
+    ':title' => $_GET['title'],
+    ':release_date' => $_GET['release_date'],
+    ':link' => $_GET['link'],
+    ':developer_id' => $_GET['developer'],
+    ':platform_id' => $_GET['platform'],
+]);   
+ 
+    
+}
+
 
 // var_dump($test); die;
 
@@ -32,6 +64,7 @@ WHERE `developer`.`id` = 1;
 // var_dump($devs); die;
 // var_dump($games); die;
 // var_dump($platForm); die;
+// var_dump($_GET['release_date']); die;
 
 
 
@@ -85,21 +118,30 @@ WHERE `developer`.`id` = 1;
                             </td>
                             <td>
 
-                            <button class="btn btn-primary btn-sm">
+                            <form action="/">
+                                <input type="hidden" name="id" value="<?= $game->getId() ?>" />
+                                <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i>
-                            </button>
+                                </button>
+                            </form>
+
                         </td>
                         <td>
 
-                            <button class="btn btn-danger btn-sm">
+                        <form method="post">
+                            <input type="hidden" name="delete" value="<?= $game->getId() ?>" />
+                            <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
+                            </form>
+
+
                         </td>
                     </tr>
 
                 <?php endforeach; ?>
 
-                    <form>
+                    <form method="get">
                         <tr>
                             <th scope="row"></th>
                             <td>
@@ -110,19 +152,27 @@ WHERE `developer`.`id` = 1;
                             <td>
                                 <input type="date" name="release_date" />
                             </td>
-                            <td>
-                                <select name="developer">
-                                    <option value="1">Bullfrog Productions</option>
-                                    <option value="2">id Software</option>
-                                </select>
+
+                          
+                            <td>  
+                     
+                                <select name="developer">           
+                                    <?php foreach ($devs as $dev): ?>
+                                        <option value="<?= $dev->getId() ?>"><?= $dev->getName() ?></option>
+                                    <?php endforeach; ?>
+                                </select>    
+                                
                             </td>
                             <td>
                                 <select name="platform">
-                                    <option value="1">SNES</option>
-                                    <option value="2">MS-DOS</option>
+                                <?php foreach ($platForms as $platForm): ?>
+                                    <option value="<?= $platForm->getId() ?>"><?= $platForm->getName() ?></option>
+                                <?php endforeach; ?>
                                 </select>
                             </td>
                             <td>
+                        
+
                                 <button type="submit" class="btn btn-success btn-sm">
                                     <i class="fas fa-plus"></i>
                                 </button>

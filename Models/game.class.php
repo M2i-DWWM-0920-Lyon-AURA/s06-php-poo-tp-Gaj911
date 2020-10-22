@@ -36,7 +36,74 @@ final class Games
     }
 
 
-    
+    public function save()
+    {
+        if (is_null($this->id)) {
+            $this->create();
+        } else {
+            $this->update();
+        }
+    }
+
+
+    protected function create()
+    {
+        global $databaseHandler;
+
+        $statement = $databaseHandler->prepare('
+            INSERT INTO `game` (
+                `title`,
+                `release_date`,
+                `link`,
+                `developer_id`,
+                `platform_id`
+            )
+            VALUES (
+                :title,
+                :release_date,
+                :link,
+                :developer_id,
+                :platform_id
+            )
+        ');
+        $statement->execute([
+            ':title' => $this->title,
+            ':release_date' => $this->release_date,
+            ':link' => $this->link,
+            ':developer_id' => $this->developer_id,
+            ':platform_id' => $this->platform_id,
+        ]);
+
+        $this->id = $databaseHandler->lastInsertId();
+    }
+
+    protected function update()
+    {
+        global $databaseHandler;
+
+        $statement = $databaseHandler->prepare('
+            UPDATE `game`
+            SET
+                `title` = :title,
+                `release_date` = :release_date,
+                `link` = :link,
+                `developer_id` = :developer_id,
+                `platform_id` = :platform_id
+                 WHERE `id` = :id;
+        ');
+        $statement->execute([
+            ':id' => $this->id,
+            ':title' => $this->title,
+            ':release_date' => $this->release_date,
+            ':link' => $this->link,
+            ':developer_id' => $this->developer_id,
+            ':platform_id' => $this->platform_id,
+        ]);
+    }
+
+
+
+
 
     /**
      * Get the value of id
@@ -173,3 +240,6 @@ function fetchGameById(int $id): ?Games {
 
     return $result[0];
 }
+
+
+

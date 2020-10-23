@@ -57,12 +57,25 @@ if (
     
 }
 
-// var_dump($_POST); die;
+//  var_dump($_POST); die;
+// var_dump($_GET); die;
+// var_dump(empty($_POST['title'])); die; 
+
+$first = isset($_GET['title']);
+
+// var_dump($first); die;
+
+$notCorrect = 
+    empty($_GET['title']) 
+    && empty($_GET['link']) 
+    && empty($_GET['release_date']);
+
+
 
 if(
     isset($_POST['id'])
     && isset($_POST['title'])
-    && isset($_POST['link']) && filter_var($_GET['link'], FILTER_VALIDATE_URL, )
+    && isset($_POST['link']) && filter_var($_POST['link'], FILTER_VALIDATE_URL, )
     && isset($_POST['release_date'])
     && isset($_POST['developer'])
     && isset($_POST['platform'])
@@ -124,6 +137,27 @@ if (isset($_POST['delete'])) {
             <div class="card-header">
                 <h1 class="mt-4 mb-4">My beautiful video games</h1>
             </div>
+
+            <?php if ($first): ?>
+            <?php if ($notCorrect): ?>
+                <!-- Affiche une alerte de succès -->
+                <div id="answer-result" class="alert alert-danger">
+                <i class="fas fa-thumbs-down"></i> Champs vide !!!
+                </div>
+            <?php else: ?>
+                <!-- Affiche une alerte d'erreur -->
+                <div id="answer-result" class="alert alert-success">
+                <i class="fas fa-thumbs-up"></i> Jeu crée ! <strong>
+                </strong>
+                </div>
+            <?php endif; ?>
+            <?php endif; ?>
+
+
+
+
+
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -155,7 +189,7 @@ if (isset($_POST['delete'])) {
                             </td>
                             <td>
 
-                            <form action="">
+                            <form action="/">
                                 <input type="hidden" name="id" value="<?= $game->getId() ?>" />
                                 <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="fas fa-edit"></i>
